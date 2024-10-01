@@ -10,19 +10,17 @@ const App = {
         {
           id: 11,
           name: "task 1",
-          isEdited: false,
         },
         {
           id: 12,
           name: "task 2",
-          isEdited: false,
         },
         {
           id: 13,
           name: "task 3",
-          isEdited: false,
         },
       ],
+      editableItem: null,
     }
   },
   mounted() {
@@ -60,15 +58,19 @@ const App = {
       this.notes.splice(index, 1)
     },
 
-    openEditNote(i) {
-      this.notes.find((item) => item.id === i).isEdited = true
+    openEditNote(note) {
+      this.editableItem = note
     },
 
-    onEdit(i) {
-      this.notes.find((item) => item.id === i).name = this.input.value
-      // reset
-      this.input.value = ""
-      this.notes.find((item) => item.id === i).isEdited = false
+    onEdit() {
+      let newNote = this.input.value.trim()
+
+      if (newNote && newNote.length) {
+        this.notes.find((item) => item.id === this.editableItem.id).name = newNote
+        // reset
+        this.input.value = ""
+        this.editableItem = null
+      } else return
     },
   },
 }
