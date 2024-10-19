@@ -3,9 +3,9 @@
     <div
       class="tag-item"
       v-for="item in items"
-      :key="item.title"
-      @click="$emit('onItemClick', item)"
-      :class="{ isPreview: isPreview, isActive: item.isActive }"
+      :key="item.alias"
+      @click="$emit('onItemClick', $event)"
+      :class="{ isPreview: isPreview }"
     >
       <span>{{ item.title }}</span>
     </div>
@@ -18,10 +18,6 @@ export default {
     items: {
       type: Array,
       reqired: true
-    },
-    isActive: {
-      type: Boolean,
-      default: false
     },
     isPreview: {
       type: Boolean,

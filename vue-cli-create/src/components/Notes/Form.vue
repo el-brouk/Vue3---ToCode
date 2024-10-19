@@ -10,38 +10,46 @@
 
 <script>
 import TagsList from '@/components/UI/TagsList.vue'
+import tags from '@/seeders/tags'
 export default {
   components: { TagsList },
   data() {
     return {
       value: '',
-      tags: [
-        {
-          isActive: false,
-          title: 'home'
-        },
-        {
-          isActive: false,
-          title: 'work'
-        },
-        {
-          isActive: false,
-          title: 'travel'
-        }
-      ]
+      tags: tags.tags
     }
   },
   methods: {
+    getActiveTags() {
+      let tags = []
+      document
+        .querySelectorAll('div.tag-item.isActive')
+        .forEach(e => tags.push({ alias: e.textContent, title: e.textContent }))
+      console.log(tags)
+      return tags
+    },
+
+    cleanActiveTags() {
+      document
+        .querySelectorAll('div.tag-item.isActive')
+        .forEach(e => e.classList.toggle('isActive'))
+    },
+
     onSubmit() {
       this.$emit('onSubmit', {
         title: this.value,
-        tags: this.tags.filter(item => item.isActive)
+        tags: this.getActiveTags()
       })
       this.value = ''
-      this.tags.forEach(item => (item.isActive = false))
+      this.cleanActiveTags()
     },
-    handleTagClick(tag) {
-      tag.isActive = true
+
+    handleTagClick(event) {
+      if (event.currentTarget) {
+        event.currentTarget.classList.toggle('isActive')
+      } else {
+        console.error('Target is null') // Логируем ошибку для отладки
+      }
     }
   }
 }
