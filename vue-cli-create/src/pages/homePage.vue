@@ -1,47 +1,20 @@
 <template>
   <Form @onSubmit="handleSubmit" />
-  <List @onRemove="handleRemove" :items="notes" />
+  <List @onRemove="handleRemove" :items="getNotesList" />
 </template>
 
 <script>
 import Form from '@/components/Notes/Form.vue'
 import List from '@/components/Notes/List.vue'
+import localStorageUpdateNotes from '@/utils/utils'
 
 export default {
   components: { Form, List },
-  data() {
-    return {
-      notes: [
-        {
-          title: 'Learn Vue 3',
-          tags: [
-            {
-              isActive: false,
-              title: 'work'
-            }
-          ]
-        },
-        {
-          title: 'Finish course',
-          tags: [
-            {
-              isActive: false,
-              title: 'work'
-            },
-            {
-              isActive: false,
-              title: 'home'
-            }
-          ]
-        }
-      ]
-    }
-  },
   mounted() {
     this.getNotes()
   },
   watch: {
-    notes: {
+    getNotesList: {
       handler(updatedList) {
         localStorage.setItem('notes', JSON.stringify(updatedList))
       },
@@ -53,7 +26,7 @@ export default {
     getNotes() {
       const localNotes = localStorage.getItem('notes')
       if (localNotes) {
-        this.notes = JSON.parse(localNotes)
+        this.getNotesList = JSON.parse(localNotes)
       }
     },
     // * submit note
@@ -62,11 +35,16 @@ export default {
         title: title,
         tags: tags
       }
-      this.notes.push(note)
+      this.$store.dispatch('addNote', note)
     },
     // * remove note
     handleRemove(index) {
-      this.notes.splice(index, 1)
+      this.$store.dispatch('removeNote', index)
+    }
+  },
+  computed: {
+    getNotesList() {
+      return this.$store.getters.getNotesList
     }
   }
 }
